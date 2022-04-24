@@ -6,6 +6,7 @@ import (
 	"github.com/tjfoc/gmsm/sm2"
 	"github.com/tjfoc/gmsm/sm3"
 	"github.com/tjfoc/gmsm/sm4"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -28,7 +29,7 @@ func GenerateSm2KeyPair() (*sm2.PrivateKey, *sm2.PublicKey) {
 }
 
 // Sm2Encrypt 使用sm2算法加密明文，得到字节流
-func Sm2Encrypt(key *sm2.PublicKey, src []byte)  []byte {
+func Sm2Encrypt(key *sm2.PublicKey, src []byte) []byte {
 	encrypted, err := sm2.Encrypt(key, src, nil, 0)
 	if err != nil {
 		panic(fmt.Errorf("failed to encrypt with sm2: %w", err))
@@ -87,13 +88,14 @@ func Sm4Encrypt(key []byte, src []byte) []byte {
 	if err != nil {
 		panic(fmt.Errorf("failed to encrypt with sm4: %w", err))
 	}
-	//fmt.Println(hex.EncodeToString(encrypted))
 	return encrypted
 }
 
 // Sm4Decrypt 使用sm4算法对密文进行对称解密
 func Sm4Decrypt(key []byte, encrypted []byte) []byte {
-	decrypted, _ := sm4.Sm4Ecb(key, encrypted, false)
-	fmt.Println(string(decrypted))
+	decrypted, err := sm4.Sm4Ecb(key, encrypted, false)
+	if err != nil {
+		log.Panic(fmt.Errorf("failed to encrypt with sm4: %+v", err))
+	}
 	return decrypted
 }

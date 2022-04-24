@@ -24,14 +24,14 @@ func FirstAccess(satelliteId string) error {
 		SatelliteId: satelliteId,
 	}))
 
-	res := gxios.GetFormatResponse[string](resBytes)
+	res := gxios.GetFormatResponse[[]byte](resBytes)
 	if res.Code != 0 {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
 	}
 
 	// 解密data并得到卫星签名消息
-	dataWithSigBytes := utils.Sm2Decrypt(global.PrivateKey, []byte(res.Data))
+	dataWithSigBytes := utils.Sm2Decrypt(global.PrivateKey, res.Data)
 	dataWithSig := utils.JsonUnmarshal[response.FARWithSig](dataWithSigBytes)
 
 	// HTTP[GET] 获取卫星公钥
@@ -59,12 +59,10 @@ func FirstAccess(satelliteId string) error {
 		[]byte(data.SessionKey),
 	))
 
-	if res = utils.JsonUnmarshal[response.Response[string]](res2Bytes); res.Code != 0 {
+	if res2 := utils.JsonUnmarshal[response.Response[any]](res2Bytes); res2.Code != 0 {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
 	}
-
-	log.Println("First authentication success!")
 
 	// 认证完成后，保存密钥至本地
 	utils.WriteNewSessionRecord(model.SessionRecord{
@@ -72,6 +70,8 @@ func FirstAccess(satelliteId string) error {
 		SessionKey:     data.SessionKey,
 		ExpirationDate: data.ExpirationDate,
 	})
+
+	log.Println("First authentication success!")
 
 	return nil
 }

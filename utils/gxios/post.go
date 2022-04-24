@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/hiro942/elden-client/utils"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -18,7 +19,7 @@ func POST(url string, body any) []byte {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		panic("http error")
+		log.Panic("http error", err)
 	}
 
 	defer func(Body io.ReadCloser) {

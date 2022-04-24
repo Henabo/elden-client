@@ -50,7 +50,7 @@ func NormalAccess(satelliteId string) error {
 		url := gxios.GetBaseURL(satelliteId) + "/normal?type=encrypted"
 		resBytes := gxios.POST(url, NARWithSig)
 
-		res := utils.JsonUnmarshal[response.Response](resBytes)
+		res := utils.JsonUnmarshal[response.Response[any]](resBytes)
 
 		if res.Code != 0 {
 			return errors.Errorf("message: %s, decription: %s",
@@ -69,7 +69,7 @@ func NormalAccess(satelliteId string) error {
 		url := gxios.GetBaseURL(satelliteId) + "/normal?type=hashed"
 		resBytes := gxios.POST(url, NARWithSig)
 
-		res := utils.JsonUnmarshal[response.Response](resBytes)
+		res := utils.JsonUnmarshal[response.Response[any]](resBytes)
 
 		if res.Code != 0 {
 			return errors.Errorf("message: %s, decription: %s",

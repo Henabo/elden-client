@@ -7,12 +7,21 @@ import (
 	"github.com/hiro942/elden-client/model"
 	"github.com/tjfoc/gmsm/x509"
 	"log"
+	"net"
 	"os"
 )
 
+func GetMacAddress() string {
+	netInterface, err := net.InterfaceByName("en0")
+	if err != nil {
+		panic(fmt.Errorf("getting net interfact error: %v", err))
+	}
+	return netInterface.HardwareAddr.String()
+}
+
 func FileExist(path string) bool {
 	_, err := os.Lstat(path)
-	return os.IsExist(err)
+	return !os.IsNotExist(err)
 }
 
 func ReadKeyPair() {
@@ -37,6 +46,11 @@ func ReadKeyPair() {
 }
 
 func WriteNewSessionRecord(newRecord model.SessionRecord) {
+	// 若不存在记录文件则先创建再读
+	if !FileExist(global.SessionRecordsFilePath) {
+		WriteFile(global.SessionRecordsFilePath, nil)
+	}
+
 	// 读出原内容
 	records := ReadSessionRecords()
 
@@ -51,6 +65,11 @@ func WriteNewSessionRecord(newRecord model.SessionRecord) {
 func ReadSessionRecords() []model.SessionRecord {
 	// 读文件
 	recordsBytes := ReadFile(global.SessionRecordsFilePath)
+
+	// 若文件本身为空，则不会反序列化成功，直接返回空记录切片即可
+	if len(recordsBytes) == 0 {
+		return []model.SessionRecord{}
+	}
 
 	// 反序列化
 	records := JsonUnmarshal[[]model.SessionRecord](recordsBytes)
@@ -85,7 +104,7 @@ func JsonUnmarshal[T any](data []byte) T {
 	var result T
 	err := json.Unmarshal(data, &result)
 	if err != nil {
-		panic("json unmarshal error")
+		log.Panic("json unmarshal error: ", err)
 	}
 	return result
 }

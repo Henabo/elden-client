@@ -4,10 +4,10 @@ import "github.com/tjfoc/gmsm/sm2"
 
 const (
 	// FabricAppBaseUrl fabric app 地址
-	FabricAppBaseUrl = "http://39.107.126.155"
+	FabricAppBaseUrl = "http://39.107.126.155:8080"
 
 	// DefaultAuthenticationPort 认证服务默认端口
-	DefaultAuthenticationPort = ":20000"
+	DefaultAuthenticationPort = "20000"
 )
 
 const (

@@ -20,18 +20,18 @@ func GetMessageWithSig[T any](message T) request.MessageWithSig {
 
 func GetMessageCipherWithSm2[T any](message T, pubKey *sm2.PublicKey) request.MessageCipher {
 	messageBytes := JsonMarshal(message)
-	return request.MessageCipher{Cipher: string(Sm2Encrypt(pubKey, messageBytes))}
+	return request.MessageCipher{Cipher: Sm2Encrypt(pubKey, messageBytes)}
 }
 
-func GetMessageCipherWithSm4[T any](message T, key []byte) request.MessageCipher {
+func GetMessageCipherWithSm4[T any](message T, sm4Key []byte) request.MessageCipher {
 	messageBytes := JsonMarshal(message)
-	return request.MessageCipher{Cipher: string(Sm4Encrypt(key, messageBytes))}
+	return request.MessageCipher{Cipher: Sm4Encrypt(sm4Key, messageBytes)}
 }
 
 func GetMessageWithSigCipher[T any](message T, pubKey *sm2.PublicKey) request.MessageCipher {
 	messageWithSig := GetMessageWithSig[T](message)
 	messageWithSigBytes := JsonMarshal(messageWithSig)
 	return request.MessageCipher{
-		Cipher: string(Sm2Encrypt(pubKey, messageWithSigBytes)),
+		Cipher: Sm2Encrypt(pubKey, messageWithSigBytes),
 	}
 }

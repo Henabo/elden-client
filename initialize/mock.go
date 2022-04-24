@@ -5,7 +5,7 @@ import "github.com/hiro942/elden-client/global"
 func MockInit() {
 	global.SIMCardExist = true
 
-	global.SatelliteIPAddr["satellite-1"] = "localhost"
+	global.SatelliteIPAddrs["satellite-3333"] = "localhost"
 
-	global.HashedIMSI = "400100123456788"
+	global.MyHashedIMSI = "hashed-3333"
 }

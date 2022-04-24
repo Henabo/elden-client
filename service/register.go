@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/hiro942/elden-client/global"
 	"github.com/hiro942/elden-client/model/request"
 	"github.com/hiro942/elden-client/model/response"
@@ -8,9 +9,16 @@ import (
 	"github.com/hiro942/elden-client/utils/gxios"
 	"github.com/pkg/errors"
 	"github.com/tjfoc/gmsm/x509"
+	"log"
+	"os"
 )
 
 func Register() error {
+	err := os.MkdirAll(fmt.Sprintf("./.crypto/%s", global.MyHashedIMSI), global.DefaultFilePerm)
+	if err != nil {
+		log.Panic(fmt.Printf("failed to make directory: %+v", err))
+	}
+
 	// 生成公私钥
 	global.PrivateKey, global.PublicKey = utils.GenerateSm2KeyPair()
 
@@ -37,7 +45,7 @@ func Register() error {
 
 	// HTTP[POST] 添加用户公钥至区块链
 	responseBytes := gxios.POST(
-		global.FabricAppBaseUrl+"node/user/register",
+		global.FabricAppBaseUrl+"/node/user/register",
 		request.UserRegister{
 			Id:        global.MyHashedIMSI,
 			MacAddr:   global.MyMacAddr,
@@ -46,16 +54,13 @@ func Register() error {
 	)
 
 	// 解析http响应
-	res := utils.JsonUnmarshal[response.Response](responseBytes)
+	res := utils.JsonUnmarshal[response.Response[any]](responseBytes)
 
 	// 服务端返回错误
 	if res.Code != 0 {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
 	}
-
-	// 创建会话密钥记录文件
-	utils.WriteFile(global.SessionRecordsFilePath, nil)
 
 	// 注册成功
 	return nil

@@ -9,4 +9,5 @@ func main() {
 
 	initialize.MockInit() // mock模式
 	initialize.SysInit()  // 系统初始化
+
 }

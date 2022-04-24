@@ -8,5 +8,5 @@ type MessageWithSig struct {
 
 // MessageCipher indicates the encrypted message
 type MessageCipher struct {
-	Cipher string `json:"cipher"`
+	Cipher []byte `json:"cipher"`
 }
