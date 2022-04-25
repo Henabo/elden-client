@@ -16,7 +16,7 @@ import (
 func Register() error {
 	err := os.MkdirAll(fmt.Sprintf("./.crypto/%s", global.MyHashedIMSI), global.DefaultFilePerm)
 	if err != nil {
-		log.Panic(fmt.Printf("failed to make directory: %+v", err))
+		log.Panicln(fmt.Printf("failed to make directory: %+v", err))
 	}
 
 	// 生成公私钥

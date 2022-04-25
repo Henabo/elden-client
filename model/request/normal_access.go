@@ -1,17 +1,24 @@
 package request
 
-// NAR normal access request
-type NAR[T ~string | SessionKeyKeyWithExpDate] struct {
-	HashedIMSI     string `json:"hashedIMSI"`
-	MacAddr        string `json:"macAddr"`
-	SatelliteId    string `json:"satelliteId"`
-	SessionKeyInfo T      `json:"sessionKey"`
-	TimeStamp      int64  `json:"timeStamp"`
+// NARHashed normal access request with hashed session key
+type NARHashed struct {
+	HashedIMSI       string `json:"hashedIMSI"`
+	MacAddr          string `json:"macAddr"`
+	SatelliteId      string `json:"satelliteId"`
+	HashedSessionKey string `json:"hashedSessionKey"`
+	TimeStamp        int64  `json:"timeStamp"`
 }
 
-type HashedSessionKey string
+// NAREncrypted normal access request with encrypted session key
+type NAREncrypted struct {
+	HashedIMSI  string `json:"hashedIMSI"`
+	MacAddr     string `json:"macAddr"`
+	SatelliteId string `json:"satelliteId"`
+	EncryptedSessionKeyWithExpDate
+	TimeStamp int64 `json:"timeStamp"`
+}
 
-type SessionKeyKeyWithExpDate struct {
-	EncryptedSessionKey string `json:"encryptedSessionKey"`
+type EncryptedSessionKeyWithExpDate struct {
+	EncryptedSessionKey []byte `json:"encryptedSessionKey"`
 	ExpirationDate      int64  `json:"expirationDate"`
 }

@@ -3,8 +3,10 @@ package initialize
 import (
 	"fmt"
 	"github.com/hiro942/elden-client/global"
+	"github.com/hiro942/elden-client/router"
 	"github.com/hiro942/elden-client/service"
 	"github.com/hiro942/elden-client/utils"
+	"github.com/hiro942/elden-client/utils/gxios"
 	"log"
 	"net"
 	"time"
@@ -14,7 +16,7 @@ import (
 func ListenBroadcast() {
 	packageConn, err := net.ListenPacket("udp4", ":8829")
 	if err != nil {
-		panic(err)
+		log.Panicln(err)
 	}
 	defer packageConn.Close()
 
@@ -22,7 +24,7 @@ func ListenBroadcast() {
 		buf := make([]byte, 1024)
 		n, addr, err := packageConn.ReadFrom(buf)
 		if err != nil {
-			panic(err)
+			log.Panicln(err)
 		}
 		fmt.Printf("%s sent this: %s\n", addr, buf[:n])
 
@@ -56,8 +58,25 @@ func SysInit() {
 	for {
 		if global.SIMCardExist { // SIM卡存在则启动
 			if simCardExistsForSeconds == 0 {
-				AuthenticationInit() // 认证服务初始化
-				service.FirstAccess("satellite-3333")
+				go router.Routers().Run(":19999") // 启动路由
+				AuthenticationInit()              // 认证服务初始化
+				err := service.FirstAccess(global.MockSatelliteId)
+				if err != nil {
+					log.Panicln(fmt.Errorf("register error: %+v", err))
+				}
+
+				log.Printf("Disconnect With %s\n", global.MockSatelliteId)
+				// 断开连接
+				gxios.Disconnect(global.MockSatelliteId, false)
+
+				log.Println("Sleep for 3 seconds ...")
+				time.Sleep(time.Second * 3)
+
+				err = service.NormalAccess(global.MockSatelliteId)
+				if err != nil {
+					log.Panicln(fmt.Errorf("register error: %v", err))
+				}
+
 				//go router.Routers().Run(global.DefaultAuthenticationPort) // 启动路由
 			}
 			simCardExistsForSeconds += 3
@@ -86,7 +105,7 @@ func AuthenticationInit() {
 	publicKeyPath := global.CryptoPath + global.MyHashedIMSI + "/" + global.PublicKeyPemFileName
 	if !utils.FileExist(privateKeyPath) || !utils.FileExist(publicKeyPath) {
 		if err := service.Register(); err != nil {
-			panic(fmt.Errorf("register error: %v", err))
+			log.Panicln(fmt.Errorf("register error: %+v", err))
 		}
 	} else {
 		utils.ReadKeyPair()

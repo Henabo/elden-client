@@ -14,7 +14,7 @@ import (
 func GetMacAddress() string {
 	netInterface, err := net.InterfaceByName("en0")
 	if err != nil {
-		panic(fmt.Errorf("getting net interfact error: %v", err))
+		log.Panicln(fmt.Errorf("getting net interfact error: %v", err))
 	}
 	return netInterface.HardwareAddr.String()
 }
@@ -32,13 +32,13 @@ func ReadKeyPair() {
 	// 转化私钥
 	privateKey, err := x509.ReadPrivateKeyFromPem(privateKeyPem, global.PrivateKeyPwd)
 	if err != nil {
-		log.Panic(fmt.Printf("failed to convert pem to sm2 private key: %+v", err))
+		log.Panicln(fmt.Printf("failed to convert pem to sm2 private key: %+v", err))
 	}
 
 	// 转化公钥
 	publicKey, err := x509.ReadPublicKeyFromPem(publicKeyPem)
 	if err != nil {
-		log.Panic(fmt.Printf("failed to convert pem to sm2 public key: %+v", err))
+		log.Panicln(fmt.Printf("failed to convert pem to sm2 public key: %+v", err))
 	}
 
 	global.PrivateKey = privateKey
@@ -80,14 +80,14 @@ func ReadSessionRecords() []model.SessionRecord {
 func WriteFile(path string, data []byte) {
 	err := os.WriteFile(path, data, global.DefaultFilePerm)
 	if err != nil {
-		log.Panic(fmt.Printf("failed to write file: %+v", err))
+		log.Panicln(fmt.Printf("failed to write file: %+v", err))
 	}
 }
 
 func ReadFile(path string) []byte {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Panic(fmt.Printf("failed to read file: %+v", err))
+		log.Panicln(fmt.Printf("failed to read file: %+v", err))
 	}
 	return data
 }
@@ -95,7 +95,7 @@ func ReadFile(path string) []byte {
 func JsonMarshal(v any) []byte {
 	result, err := json.Marshal(v)
 	if err != nil {
-		panic("json marshal error")
+		log.Panicln("json marshal error")
 	}
 	return result
 }
@@ -104,7 +104,7 @@ func JsonUnmarshal[T any](data []byte) T {
 	var result T
 	err := json.Unmarshal(data, &result)
 	if err != nil {
-		log.Panic("json unmarshal error: ", err)
+		log.Panicln("json unmarshal error: ", err)
 	}
 	return result
 }

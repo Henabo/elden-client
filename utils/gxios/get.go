@@ -9,7 +9,7 @@ import (
 func GET(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Panic(err)
+		log.Panicln(err)
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -20,7 +20,7 @@ func GET(url string) []byte {
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Panic(err)
+		log.Panicln(err)
 	}
 
 	return respBytes

@@ -3,6 +3,10 @@ package global
 import "github.com/tjfoc/gmsm/sm2"
 
 const (
+	TimeTemplate = "2006-01-02 15:04:05"
+)
+
+const (
 	// FabricAppBaseUrl fabric app 地址
 	FabricAppBaseUrl = "http://39.107.126.155:8080"
 
@@ -33,7 +37,7 @@ var (
 	PrivateKey       *sm2.PrivateKey
 	PublicKey        *sm2.PublicKey
 	SatellitePubKeys = map[string]*sm2.PublicKey{}
-	SatelliteIPAddrs = map[string]string{}
+	SatelliteSocket  = map[string]string{}
 
 	// PrivateKeyPwd 私钥加密密码
 	PrivateKeyPwd = []byte("elden")
@@ -41,4 +45,9 @@ var (
 	PrivateKeyPath         string
 	PublicKeyPath          string
 	SessionRecordsFilePath string
+)
+
+var (
+	MockSatelliteId    string
+	MockNewSatelliteId string
 )

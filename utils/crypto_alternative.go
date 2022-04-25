@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log"
 )
 
 // Sha256Hash 获取数据的16进制SHA256哈希值
@@ -20,7 +21,7 @@ func Sha256Hash(data string) string {
 func GenerateRSAKeyPair() (*rsa.PrivateKey, *rsa.PublicKey) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)  //1024bit
 	if err != nil {
-		panic(fmt.Errorf("failed to generate the RSA Key: %w", err))
+		log.Panicln(fmt.Errorf("failed to generate the RSA Key: %w", err))
 	}
 	publicKey := &privateKey.PublicKey
 	return privateKey, publicKey
@@ -30,7 +31,7 @@ func GenerateRSAKeyPair() (*rsa.PrivateKey, *rsa.PublicKey) {
 func RSAEncrypt(src []byte, key *rsa.PublicKey) []byte {
 	encrypted, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, key, src, nil)
 	if err != nil {
-		panic(fmt.Errorf("failed to encrypt the message: %w", err))
+		log.Panicln(fmt.Errorf("failed to encrypt the message: %w", err))
 	}
 	return encrypted
 }
@@ -39,7 +40,7 @@ func RSAEncrypt(src []byte, key *rsa.PublicKey) []byte {
 func RSADecrypt(src []byte, key *rsa.PrivateKey) []byte {
 	decrypted, err := key.Decrypt(nil, src, &rsa.OAEPOptions{Hash: crypto.SHA256})
 	if err != nil {
-		panic(fmt.Errorf("failed to decrypt the cipher: %w", err))
+		log.Panicln(fmt.Errorf("failed to decrypt the cipher: %w", err))
 	}
 	return decrypted
 }
@@ -48,7 +49,7 @@ func RSADecrypt(src []byte, key *rsa.PrivateKey) []byte {
 func RSASign(key *rsa.PrivateKey, hashed []byte) []byte {
 	sig, err := rsa.SignPKCS1v15(nil, key, crypto.SHA256, hashed)
 	if err != nil {
-		panic(fmt.Errorf("failed to sign: %w", err))
+		log.Panicln(fmt.Errorf("failed to sign: %w", err))
 	}
 	return sig
 }
@@ -56,6 +57,6 @@ func RSASign(key *rsa.PrivateKey, hashed []byte) []byte {
 // RSAVerify 验证签名
 func RSAVerify(key *rsa.PublicKey, hashed []byte, sig []byte) {
 	if err := rsa.VerifyPKCS1v15(key, crypto.SHA256, hashed[:], sig); err != nil {
-		panic(fmt.Errorf("failed to verify the signature: %w", err))
+		log.Panicln(fmt.Errorf("failed to verify the signature: %w", err))
 	}
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/sekiro.iml" filepath="$PROJECT_DIR$/.idea/sekiro.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/elden-client.iml" filepath="$PROJECT_DIR$/.idea/elden-client.iml" />
     </modules>
   </component>
 </project>
