@@ -1,13 +1,14 @@
 package initialize
 
-import "github.com/hiro942/elden-client/global"
+import (
+	"github.com/hiro942/elden-client/global"
+	"github.com/hiro942/elden-client/mock"
+)
 
 func MockInit() {
-	global.SIMCardExist = true
-	global.MyHashedIMSI = "hashed-9"
-
-	global.MockSatelliteId = "satellite-99"
-	global.MockNewSatelliteId = "satellite-999"
-	global.SatelliteSocket[global.MockSatelliteId] = "localhost:20000"
-	global.SatelliteSocket[global.MockNewSatelliteId] = "localhost:20001"
+	mock.MyHashedId = "hashed-UUU"
+	mock.SatelliteId = "satellite-AAA"
+	mock.NewSatelliteId = "satellite-BBB"
+	global.SatelliteSockets[mock.SatelliteId] = "localhost:20000"
+	global.SatelliteSockets[mock.NewSatelliteId] = "localhost:20001"
 }

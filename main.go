@@ -6,8 +6,7 @@ func main() {
 	//port := *flag.String("p", "20000", "application running port")
 	//flag.Parse()
 	//fmt.Println("running port:", port)
-
+	go initialize.MyTest()
 	initialize.MockInit() // mock模式
 	initialize.SysInit()  // 系统初始化
-
 }

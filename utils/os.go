@@ -1,11 +1,8 @@
 package utils
 
 import (
-	"encoding/json"
-	"fmt"
 	"github.com/hiro942/elden-client/global"
 	"github.com/hiro942/elden-client/model"
-	"github.com/tjfoc/gmsm/x509"
 	"log"
 	"net"
 	"os"
@@ -14,7 +11,7 @@ import (
 func GetMacAddress() string {
 	netInterface, err := net.InterfaceByName("en0")
 	if err != nil {
-		log.Panicln(fmt.Errorf("getting net interfact error: %v", err))
+		log.Panicln("getting net interface error:", err)
 	}
 	return netInterface.HardwareAddr.String()
 }
@@ -29,18 +26,11 @@ func ReadKeyPair() {
 	privateKeyPem := ReadFile(global.PrivateKeyPath)
 	publicKeyPem := ReadFile(global.PublicKeyPath)
 
-	// 转化私钥
-	privateKey, err := x509.ReadPrivateKeyFromPem(privateKeyPem, global.PrivateKeyPwd)
-	if err != nil {
-		log.Panicln(fmt.Printf("failed to convert pem to sm2 private key: %+v", err))
-	}
+	// 公私钥转化
+	privateKey := ReadPrivateKeyFromPem(privateKeyPem)
+	publicKey := ReadPublicKeyFromPem(publicKeyPem)
 
-	// 转化公钥
-	publicKey, err := x509.ReadPublicKeyFromPem(publicKeyPem)
-	if err != nil {
-		log.Panicln(fmt.Printf("failed to convert pem to sm2 public key: %+v", err))
-	}
-
+	// 更新系统全局变量
 	global.PrivateKey = privateKey
 	global.PublicKey = publicKey
 }
@@ -80,31 +70,14 @@ func ReadSessionRecords() []model.SessionRecord {
 func WriteFile(path string, data []byte) {
 	err := os.WriteFile(path, data, global.DefaultFilePerm)
 	if err != nil {
-		log.Panicln(fmt.Printf("failed to write file: %+v", err))
+		log.Panicln("failed to write file:", err)
 	}
 }
 
 func ReadFile(path string) []byte {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Panicln(fmt.Printf("failed to read file: %+v", err))
+		log.Panicln("failed to read file:", err)
 	}
 	return data
-}
-
-func JsonMarshal(v any) []byte {
-	result, err := json.Marshal(v)
-	if err != nil {
-		log.Panicln("json marshal error")
-	}
-	return result
-}
-
-func JsonUnmarshal[T any](data []byte) T {
-	var result T
-	err := json.Unmarshal(data, &result)
-	if err != nil {
-		log.Panicln("json unmarshal error: ", err)
-	}
-	return result
 }

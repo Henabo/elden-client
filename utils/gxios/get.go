@@ -20,7 +20,7 @@ func GET(url string) []byte {
 
 	respBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Panicln(err)
+		log.Panicln("read response body error: ", err)
 	}
 
 	return respBytes

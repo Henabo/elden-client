@@ -1,15 +1,14 @@
 package service
 
 import (
-	"fmt"
 	"github.com/hiro942/elden-client/global"
+	"github.com/hiro942/elden-client/global/url"
 	"github.com/hiro942/elden-client/model"
 	"github.com/hiro942/elden-client/model/request"
 	"github.com/hiro942/elden-client/model/response"
 	"github.com/hiro942/elden-client/utils"
 	"github.com/hiro942/elden-client/utils/gxios"
 	"github.com/pkg/errors"
-	"github.com/tjfoc/gmsm/x509"
 	"log"
 )
 
@@ -17,17 +16,18 @@ func FirstAccess(satelliteId string) error {
 	log.Println("Go First Access")
 
 	// ********************** Step1 ****************************
-	log.Println("First Access Step1: Send basic information of user.")
+	log.Println("First Access Step1: Send basic information.")
 
 	// HTTP[POST] 发送用户基本信息
-	url := fmt.Sprintf("http://%s/auth/first/step1", global.SatelliteSocket[satelliteId])
-	resBytes := gxios.POST(url, utils.GetMessageWithSig[request.FAR](request.FAR{
-		HashedIMSI:  global.MyHashedIMSI,
-		MacAddr:     global.MyMacAddr,
-		SatelliteId: satelliteId,
-	}))
+	resBytes := gxios.POST(
+		url.FirstAccessStep1(satelliteId),
+		utils.GetMessageWithSig[request.FAR](request.FAR{
+			HashedIMSI:  global.MyHashedIMSI,
+			MacAddr:     global.MyMacAddr,
+			SatelliteId: satelliteId,
+		}))
 
-	res := gxios.GetFormatResponse[[]byte](resBytes)
+	res := utils.JsonUnmarshal[response.Response[[]byte]](resBytes)
 	if res.Code != 0 {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
@@ -40,10 +40,9 @@ func FirstAccess(satelliteId string) error {
 
 	// HTTP[GET] 获取卫星公钥
 	satellitePublicKeyHex, _ := gxios.QuerySatellitePublicKey(satelliteId)
-	satellitePublicKey, err := x509.ReadPublicKeyFromHex(satellitePublicKeyHex)
-	if err != nil {
-		log.Panicln(fmt.Printf("failed to resolve satellite's public key: %+v", err))
-	}
+	satellitePublicKey := utils.ReadPublicKeyFromHex(satellitePublicKeyHex)
+
+	// 保存卫星公钥
 	global.SatellitePubKeys[satelliteId] = satellitePublicKey
 
 	// 验证签名
@@ -58,11 +57,12 @@ func FirstAccess(satelliteId string) error {
 	log.Println("First Access Step2: Return the random number received from the satellite.")
 
 	// HTTP[POST] 发送加密后的随机数
-	url = fmt.Sprintf("http://%s/auth/first/step2?id=%s&mac=%s", global.SatelliteSocket[satelliteId], global.MyHashedIMSI, global.MyMacAddr)
-	res2Bytes := gxios.POST(url, utils.GetMessageCipherWithSm4[request.FARWithRand](
-		request.FARWithRand{Rand: data.Rand},
-		[]byte(data.SessionKey),
-	))
+	res2Bytes := gxios.POST(
+		url.FirstAccessStep2(satelliteId),
+		utils.GetMessageCipherWithSm4[request.FARWithRand](
+			request.FARWithRand{Rand: data.Rand},
+			[]byte(data.SessionKey),
+		))
 
 	if res2 := utils.JsonUnmarshal[response.Response[any]](res2Bytes); res2.Code != 0 {
 		return errors.Errorf("message: %s, decription: %s",
@@ -79,5 +79,13 @@ func FirstAccess(satelliteId string) error {
 
 	log.Println("First Access Success! Connecting To:", satelliteId)
 
+	// 记录当前会话
+	global.CurrentSession = model.Session{
+		AuthStatus:  true,
+		SatelliteId: satelliteId,
+		Socket:      global.SatelliteSockets[satelliteId],
+		AccessType:  "first",
+		SessionKey:  []byte(data.SessionKey),
+	}
 	return nil
 }

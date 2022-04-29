@@ -1,6 +1,9 @@
 package global
 
-import "github.com/tjfoc/gmsm/sm2"
+import (
+	"github.com/hiro942/elden-client/model"
+	"github.com/tjfoc/gmsm/sm2"
+)
 
 const (
 	TimeTemplate = "2006-01-02 15:04:05"
@@ -11,7 +14,7 @@ const (
 	FabricAppBaseUrl = "http://39.107.126.155:8080"
 
 	// DefaultAuthenticationPort 认证服务默认端口
-	DefaultAuthenticationPort = "20000"
+	DefaultAuthenticationPort = "19999"
 )
 
 const (
@@ -25,29 +28,37 @@ const (
 	DefaultFilePerm = 0777
 
 	// DefaultSessionKeyAge 会话密钥默认寿命
-	DefaultSessionKeyAge = 60 * 60 * 24
+	DefaultSessionKeyAge = 3600 * 24
 )
 
 var (
 	SIMCardExist = false
-
 	MyHashedIMSI string
-	MyMacAddr    string
 
-	PrivateKey       *sm2.PrivateKey
-	PublicKey        *sm2.PublicKey
-	SatellitePubKeys = map[string]*sm2.PublicKey{}
-	SatelliteSocket  = map[string]string{}
+	MyMacAddr string
 
-	// PrivateKeyPwd 私钥加密密码
-	PrivateKeyPwd = []byte("elden")
-
+	PrivateKey             *sm2.PrivateKey
+	PublicKey              *sm2.PublicKey
 	PrivateKeyPath         string
 	PublicKeyPath          string
 	SessionRecordsFilePath string
+
+	// PrivateKeyPwd 私钥加密密码
+	PrivateKeyPwd = []byte("elden")
 )
 
 var (
-	MockSatelliteId    string
-	MockNewSatelliteId string
+	// SatellitePubKeys 卫星的公钥
+	SatellitePubKeys = map[string]*sm2.PublicKey{}
+
+	// SatelliteSockets 卫星套接字
+	SatelliteSockets = map[string]string{}
+
+	// SatelliteId 接收到的卫星广播ID
+	SatelliteId string
+
+	// HandoverSatellite 交接卫星的ID
+	HandoverSatellite string
+
+	CurrentSession = model.Session{}
 )

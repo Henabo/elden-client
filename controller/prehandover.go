@@ -2,10 +2,9 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/hiro942/elden-client/global"
 	"github.com/hiro942/elden-client/model/response"
-	"github.com/hiro942/elden-client/service"
-	"log"
-	"time"
+	"strings"
 )
 
 // @Summary authentication for normal(fast) access phrase
@@ -26,16 +25,18 @@ func PreHandoverForLocation(c *gin.Context) {
 // @Router /auth/prehandover/new_satellite?id= [post]
 
 func PreHandoverForNewSatellite(c *gin.Context) {
+	var (
+		DefaultSuccessMessage = "pre-handover for receiving new satellite id success"
+		DefaultErrorMessage   = "pre-handover for receiving new satellite id error"
+	)
+
 	newSatelliteId := c.Query("id")
-
-	response.OK(c)
-
-	// 2秒后接入新卫星
-	time.Sleep(time.Second * 2)
-
-	// 接入新卫星
-	err := service.HandoverAccess(newSatelliteId)
-	if err != nil {
-		log.Panicln(err)
+	if strings.TrimSpace(newSatelliteId) == "" {
+		response.FailWithDescription(DefaultErrorMessage, "blank new satellite id", c)
 	}
+
+	// 更新交接卫星
+	global.HandoverSatellite = newSatelliteId
+
+	response.OKWithMessage(DefaultSuccessMessage, c)
 }
