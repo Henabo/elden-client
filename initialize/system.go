@@ -35,9 +35,7 @@ func SysInit() {
 				gxios.Disconnect(global.CurrentSession.SatelliteId, false) // 断开与卫星的会话
 				simCardExistsForSeconds = 0                                // 服务时间清零
 			}
-
 		}
 		time.Sleep(time.Second * 3)
 	}
-
 }

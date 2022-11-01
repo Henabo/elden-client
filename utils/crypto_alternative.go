@@ -19,7 +19,7 @@ func Sha256Hash(data string) string {
 
 // GenerateRSAKeyPair 生成RSA密钥对
 func GenerateRSAKeyPair() (*rsa.PrivateKey, *rsa.PublicKey) {
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)  //1024bit
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048) //1024bit
 	if err != nil {
 		log.Panicln(fmt.Errorf("failed to generate the RSA Key: %w", err))
 	}

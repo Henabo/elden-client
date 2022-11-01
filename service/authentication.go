@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/hiro942/elden-client/global"
 	"github.com/hiro942/elden-client/utils/gxios"
+	"log"
 	"time"
 )
 
@@ -10,6 +11,8 @@ func Authentication() {
 	for {
 		// SIM卡存在且处于未认证状态下，开始接入
 		if global.SIMCardExist && global.CurrentSession.AuthStatus == false && global.SatelliteId != "" {
+			log.Println("Access process will start in 90 seconds ...")
+			time.Sleep(time.Second * 90)
 			// 判断账本中有无该卫星的接入记录，选择首次认证或常规认证
 			if !gxios.QueryHasAccessedSatellite(global.MyHashedIMSI, global.MyMacAddr, global.SatelliteId) {
 				// 没有记录：首次认证

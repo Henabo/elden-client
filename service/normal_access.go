@@ -14,7 +14,7 @@ import (
 )
 
 func NormalAccess(satelliteId string) error {
-	log.Println("Go Normal Access")
+	log.Println("[Normal-Access] Go Normal Access")
 
 	// 是否存在该卫星公钥
 	if _, ok := global.SatellitePubKeys[satelliteId]; !ok {
@@ -24,7 +24,7 @@ func NormalAccess(satelliteId string) error {
 		global.SatellitePubKeys[satelliteId] = satellitePublicKey
 	}
 
-	log.Println("Normal Access: Read local file of session record and check whether the session key has expired.")
+	log.Println("[Normal-Access] Read local file of session record and check whether the session key has expired.")
 	// 读会话记录文件，判断会话密钥是否过期
 	records := utils.ReadSessionRecords()
 	var sessionKey []byte
@@ -54,7 +54,7 @@ func NormalAccess(satelliteId string) error {
 	}
 
 	if isExpired {
-		log.Println("Normal Access (encrypted): The session key has expired so that user generate a new key and send the encrypted form to the satellite.")
+		log.Println("[Normal-Access](encrypted): The session key has expired so that user generate a new key and send the encrypted form to the satellite.")
 
 		resBytes := gxios.POST(
 			url.NormalAccess(satelliteId, false, false),
@@ -70,11 +70,11 @@ func NormalAccess(satelliteId string) error {
 				res.Message, res.Description)
 		}
 
-		log.Println("Normal Access (encrypted): Response OK.")
+		log.Println("[Normal-Access] (encrypted): Response OK.")
 
 	} else {
 
-		log.Println("Normal Access (hashed): The session key has not expired so that user send the hashed form to the satellite.")
+		log.Println("[Normal-Access](hashed): The session key has not expired so that user send the hashed form to the satellite.")
 
 		resBytes := gxios.POST(
 			url.NormalAccess(satelliteId, false, true),
@@ -90,10 +90,10 @@ func NormalAccess(satelliteId string) error {
 				res.Message, res.Description)
 		}
 
-		log.Println("Normal Access (hashed): Response OK.")
+		log.Println("[Normal-Access](hashed): Response OK.")
 	}
 
-	log.Println("Normal Access Success!")
+	log.Println("[Normal-Access] Normal Access Success!")
 
 	// 记录当前会话
 	global.CurrentSession = model.Session{

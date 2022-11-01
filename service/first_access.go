@@ -13,10 +13,10 @@ import (
 )
 
 func FirstAccess(satelliteId string) error {
-	log.Println("Go First Access")
+	log.Println("[First-Access] Go First Access")
 
 	// ********************** Step1 ****************************
-	log.Println("First Access Step1: Send basic information.")
+	log.Println("[First-Access] First Access Step1: Send basic information.")
 
 	// HTTP[POST] 发送用户基本信息
 	resBytes := gxios.POST(
@@ -32,7 +32,7 @@ func FirstAccess(satelliteId string) error {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
 	}
-	log.Println("First Access Step1: Response OK, get session key and random number from the satellite.")
+	log.Println("[First-Access] First Access Step1: Response OK, get session key and random number from the satellite.")
 
 	// 解密data并得到卫星签名消息
 	dataWithSigBytes := utils.Sm2Decrypt(global.PrivateKey, res.Data)
@@ -54,7 +54,7 @@ func FirstAccess(satelliteId string) error {
 	data := utils.JsonUnmarshal[response.FAR](dataWithSig.Plain)
 
 	// ********************** Step2 ****************************
-	log.Println("First Access Step2: Return the random number received from the satellite.")
+	log.Println("[First-Access] First Access Step2: Return the random number received from the satellite.")
 
 	// HTTP[POST] 发送加密后的随机数
 	res2Bytes := gxios.POST(
@@ -68,7 +68,7 @@ func FirstAccess(satelliteId string) error {
 		return errors.Errorf("message: %s, decription: %s",
 			res.Message, res.Description)
 	}
-	log.Println("First Access Step2: Response OK.")
+	log.Println("[First-Access] First Access Step2: Response OK.")
 
 	// 认证完成后，保存密钥至本地
 	utils.WriteNewSessionRecord(model.SessionRecord{
@@ -77,7 +77,7 @@ func FirstAccess(satelliteId string) error {
 		ExpirationDate: data.ExpirationDate,
 	})
 
-	log.Println("First Access Success! Connecting To:", satelliteId)
+	log.Println("[First-Access] First Access Success! Connecting To:", satelliteId)
 
 	// 记录当前会话
 	global.CurrentSession = model.Session{

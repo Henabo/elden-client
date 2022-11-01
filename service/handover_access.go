@@ -14,7 +14,7 @@ import (
 )
 
 func HandoverAccess(satelliteId string) error {
-	log.Println("Go Handover Access")
+	log.Println("[Handover-Access] Go Handover Access")
 
 	// 是否存在该卫星公钥
 	if _, ok := global.SatellitePubKeys[satelliteId]; !ok {
@@ -31,7 +31,7 @@ func HandoverAccess(satelliteId string) error {
 	var isExpired = false
 	var sessionKeyInfo any
 
-	log.Println("Handover Access: Read local file of session record and check whether the session key has expired.")
+	log.Println("[Handover-Access] Read local file of session record and check whether the session key has expired.")
 
 	// 读会话记录文件，判断有无密钥记录
 	hasRecord := false
@@ -86,7 +86,7 @@ func HandoverAccess(satelliteId string) error {
 
 	if hasRecord && !isExpired {
 
-		log.Println("Handover Access (hashed): The session key has not expired so that user send the hashed form to the satellite.")
+		log.Println("[Handover-Access](hashed): The session key has not expired so that user send the hashed form to the satellite.")
 
 		resBytes := gxios.POST(
 			url.NormalAccess(satelliteId, true, true),
@@ -102,11 +102,11 @@ func HandoverAccess(satelliteId string) error {
 				res.Message, res.Description)
 		}
 
-		log.Println("Handover Access (hashed): Response OK.")
+		log.Println("[Handover-Access](hashed): Response OK.")
 
 	} else {
 
-		log.Println("Handover Access (encrypted): The session key has expired so that user generate a new key and send the encrypted form to the satellite.")
+		log.Println("[Handover-Access](encrypted): The session key has expired so that user generate a new key and send the encrypted form to the satellite.")
 
 		resBytes := gxios.POST(
 			url.NormalAccess(satelliteId, true, false),
@@ -123,7 +123,7 @@ func HandoverAccess(satelliteId string) error {
 		}
 	}
 
-	log.Println("Handover Access Success! Connecting To:", satelliteId)
+	log.Println("[Handover-Access] Handover Access Success! Connecting To:", satelliteId)
 
 	// 记录当前会话
 	global.CurrentSession = model.Session{

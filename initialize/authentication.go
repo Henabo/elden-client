@@ -9,7 +9,7 @@ import (
 )
 
 func AuthenticationInit() {
-	// 更新（切换）文件路径
+	// 获取公私钥文件路径
 	global.PrivateKeyPath = global.CryptoPath + global.MyHashedIMSI + "/" + global.PrivateKeyPemFileName
 	global.PublicKeyPath = global.CryptoPath + global.MyHashedIMSI + "/" + global.PublicKeyPemFileName
 	global.SessionRecordsFilePath = global.CryptoPath + global.MyHashedIMSI + "/" + global.SessionRecordsFileName
