@@ -1,0 +1,11 @@
+# 客户端配置
+ClientID = "u0"
+
+# HTTP服务端口
+HttpServerPort = "20000"
+
+# fabric-app 地址
+FabricAppHostPath = "http://124.71.187.170:8080"
+
+# 私钥加密密钥
+PrivateKeyPwd = "elden"

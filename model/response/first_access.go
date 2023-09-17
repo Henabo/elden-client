@@ -7,7 +7,7 @@ type FAR struct {
 	Rand           int    `json:"rand"`
 }
 
-type FARWithSig struct {
+type FARWithSign struct {
 	Plain     []byte `json:"plain"`
 	Signature []byte `json:"signature"`
 }

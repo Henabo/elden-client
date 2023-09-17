@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"github.com/hiro942/elden-client/global"
 	"github.com/tjfoc/gmsm/sm2"
 	"github.com/tjfoc/gmsm/x509"
 	"log"
@@ -15,8 +14,8 @@ func ReadPublicKeyFromHex(publicKeyHex string) *sm2.PublicKey {
 	return publicKey
 }
 
-func ReadPrivateKeyFromPem(privateKeyPem []byte) *sm2.PrivateKey {
-	privateKey, err := x509.ReadPrivateKeyFromPem(privateKeyPem, global.PrivateKeyPwd)
+func ReadPrivateKeyFromPem(privateKeyPem []byte, privateKeyPwd []byte) *sm2.PrivateKey {
+	privateKey, err := x509.ReadPrivateKeyFromPem(privateKeyPem, privateKeyPwd)
 	if err != nil {
 		log.Panicln("failed to convert pem to sm2 private key:", err)
 	}
@@ -39,8 +38,8 @@ func WritePublicKeyToPem(publicKey *sm2.PublicKey) []byte {
 	return publicKeyPem
 }
 
-func WritePrivateKeyToPem(privateKey *sm2.PrivateKey) []byte {
-	privateKeyPem, err := x509.WritePrivateKeyToPem(privateKey, global.PrivateKeyPwd)
+func WritePrivateKeyToPem(privateKey *sm2.PrivateKey, privateKeyPwd []byte) []byte {
+	privateKeyPem, err := x509.WritePrivateKeyToPem(privateKey, []byte(privateKeyPwd))
 	if err != nil {
 		log.Panicln("failed to convert private key to pem:", err)
 	}

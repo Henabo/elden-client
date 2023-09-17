@@ -6,8 +6,8 @@ type PublicKeys map[string]string
 // UserAccessRecord is single access log
 type UserAccessRecord struct {
 	AccessType          string `json:"accessType"`          // "first" || "normal" || "handover"
-	SatelliteId         string `json:"satelliteId"`         // current satellite
-	PreviousSatelliteId string `json:"previousSatelliteId"` // previous satellite in handover
+	SatelliteID         string `json:"satelliteID"`         // current satellite
+	PreviousSatelliteID string `json:"previousSatelliteID"` // previous satellite in handover
 	StartAt             string `json:"startAt"`             // when to start
 	EndAt               string `json:"endAt"`               // when to end
 }
@@ -16,7 +16,7 @@ type UserAccessRecord struct {
 type UserAccessRecords map[string][]UserAccessRecord
 
 type Node struct {
-	Id           string            `json:"id"`
+	ID           string            `json:"id"`
 	NodeType     string            `json:"nodeType"`
 	PublicKey    PublicKeys        `json:"publicKey"`
 	AccessRecord UserAccessRecords `json:"accessRecord"`
@@ -25,7 +25,7 @@ type Node struct {
 }
 
 type CreateAccessRecord struct {
-	Id           string           `json:"id"`
+	ID           string           `json:"id"`
 	MacAddr      string           `json:"macAddr"`
 	AccessRecord UserAccessRecord `json:"accessRecord"`
 }

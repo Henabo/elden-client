@@ -4,7 +4,7 @@ package request
 type FAR struct {
 	HashedIMSI  string `json:"hashedIMSI"`
 	MacAddr     string `json:"macAddr"`
-	SatelliteId string `json:"satelliteId"`
+	SatelliteID string `json:"satelliteID"`
 }
 
 type FARWithRand struct {

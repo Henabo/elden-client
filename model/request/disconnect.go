@@ -1,7 +1,7 @@
 package request
 
 type Disconnect struct {
-	Id         string `json:"id"`
+	ID         string `json:"id"`
 	MacAddr    string `json:"macAddr"`
 	IsHandover bool   `json:"isHandover"`
 }

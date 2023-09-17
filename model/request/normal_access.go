@@ -4,7 +4,7 @@ package request
 type NARHashed struct {
 	HashedIMSI       string `json:"hashedIMSI"`
 	MacAddr          string `json:"macAddr"`
-	SatelliteId      string `json:"satelliteId"`
+	SatelliteID      string `json:"satelliteID"`
 	HashedSessionKey string `json:"hashedSessionKey"`
 	TimeStamp        int64  `json:"timeStamp"`
 }
@@ -13,7 +13,7 @@ type NARHashed struct {
 type NAREncrypted struct {
 	HashedIMSI  string `json:"hashedIMSI"`
 	MacAddr     string `json:"macAddr"`
-	SatelliteId string `json:"satelliteId"`
+	SatelliteID string `json:"satelliteID"`
 	EncryptedSessionKeyWithExpDate
 	TimeStamp int64 `json:"timeStamp"`
 }
